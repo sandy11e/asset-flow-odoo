@@ -1,5 +1,8 @@
 const PERMISSIONS = {
-    ADMIN: ["*"],
+    ADMIN: ["department:create",
+"department:read",
+"department:update",
+"department:delete",],
 
     ASSET_MANAGER: [
         "dashboard:read",

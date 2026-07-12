@@ -1,9 +1,11 @@
 const express = require("express");
 
 const router = express.Router();
+const departmentRoutes = require("./department.routes");
 
 const authRoutes = require("./auth.routes");
 const authMiddleware = require("../middlewares/auth.middleware");
+router.use("/departments", departmentRoutes);
 
 router.get("/health", (req, res) => {
     res.json({
@@ -20,5 +22,4 @@ router.get("/profile", authMiddleware, (req, res) => {
         user: req.user,
     });
 });
-
 module.exports = router;
