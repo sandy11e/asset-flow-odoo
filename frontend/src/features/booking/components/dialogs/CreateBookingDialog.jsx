@@ -5,6 +5,22 @@ import Select from '@/components/forms/Select';
 import Button from '@/components/ui/Button';
 import { X, CheckCircle, AlertCircle } from 'lucide-react';
 
+const RESOURCE_TYPE_OPTIONS = [
+  { value: '', label: 'Select Resource Type...' },
+  { value: 'Meeting Room', label: 'Meeting Room' },
+  { value: 'Vehicle', label: 'Vehicle' },
+  { value: 'Equipment', label: 'Equipment' },
+  { value: 'Workspace', label: 'Workspace' },
+  { value: 'Lab', label: 'Laboratory' },
+];
+
+const BOOKING_PRIORITY_OPTIONS = [
+  { value: '', label: 'Select Priority...' },
+  { value: 'Low', label: 'Low' },
+  { value: 'Medium', label: 'Medium' },
+  { value: 'High', label: 'High' },
+  { value: 'Critical', label: 'Critical' },
+];
 const CreateBookingDialog = ({ isOpen, onClose, onSubmit, initialResourceType = 'Meeting Room' }) => {
   const [formData, setFormData] = useState({
     title: '',

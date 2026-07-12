@@ -1,15 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Plus, Download, Filter, Search } from 'lucide-react';
 import AssetTable from '../components/tables/AssetTable';
-import { assetMockData } from '../mock/asset.mock';
+import { getAssets } from '../services/asset.service';
 
 const AssetList = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [assets, setAssets] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchAssets = async () => {
+      try {
+        const response = await getAssets();
+        // Adjust according to standard API response structure
+        const data = response.data?.data || response.data || [];
+        setAssets(data);
+      } catch (error) {
+        console.error('Failed to fetch assets:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchAssets();
+  }, []);
   
-  // Basic mock filter
-  const filteredAssets = assetMockData.filter(asset => 
-    asset.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    asset.id.toLowerCase().includes(searchTerm.toLowerCase())
+  // Basic filter
+  const filteredAssets = assets.filter(asset => 
+    asset.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    asset.assetTag?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (

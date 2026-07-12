@@ -7,15 +7,16 @@ import { useAuth } from '../context/AuthContext';
 import { ROUTES } from '@/routes/routes';
 import Button from '@/components/ui/Button';
 import Input from '@/components/forms/Input';
-import { Mail, Lock } from 'lucide-react';
+import { Mail, Lock, User } from 'lucide-react';
 
-const loginSchema = z.object({
+const registerSchema = z.object({
+  name: z.string().min(2, 'Name is required'),
   email: z.string().min(1, 'Email is required').email('Invalid email address'),
-  password: z.string().min(1, 'Password is required'),
+  password: z.string().min(6, 'Password must be at least 6 characters'),
 });
 
-const Login = () => {
-  const { login } = useAuth();
+const Register = () => {
+  const { register: registerUser } = useAuth();
   const navigate = useNavigate();
   const [authError, setAuthError] = useState('');
 
@@ -24,24 +25,24 @@ const Login = () => {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm({
-    resolver: zodResolver(loginSchema),
+    resolver: zodResolver(registerSchema),
   });
 
   const onSubmit = async (data) => {
     setAuthError('');
     try {
-      await login(data);
+      await registerUser(data);
       navigate(ROUTES.DASHBOARD);
     } catch (err) {
-      setAuthError(err.message || 'Invalid credentials');
+      setAuthError(err.message || 'Failed to create account');
     }
   };
 
   return (
     <div className="w-full max-w-md mx-auto">
       <div className="text-center mb-8">
-        <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">Welcome back</h2>
-        <p className="mt-2 text-sm text-gray-600">Sign in to your AssetFlow account</p>
+        <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">Create an account</h2>
+        <p className="mt-2 text-sm text-gray-600">Join AssetFlow to manage your resources</p>
       </div>
       
       {authError && (
@@ -57,6 +58,16 @@ const Login = () => {
       <div className="bg-white py-8 px-6 shadow rounded-lg sm:px-10 border border-gray-200">
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <Input
+            id="name"
+            label="Full Name"
+            type="text"
+            placeholder="John Doe"
+            icon={User}
+            error={errors.name?.message}
+            {...register('name')}
+          />
+          
+          <Input
             id="email"
             label="Email Address"
             type="email"
@@ -66,22 +77,15 @@ const Login = () => {
             {...register('email')}
           />
           
-          <div>
-            <Input
-              id="password"
-              label="Password"
-              type="password"
-              placeholder="••••••••"
-              icon={Lock}
-              error={errors.password?.message}
-              {...register('password')}
-            />
-            <div className="flex items-center justify-end mt-2">
-              <Link to="/forgot-password" className="text-sm font-medium text-primary-600 hover:text-primary-500">
-                Forgot your password?
-              </Link>
-            </div>
-          </div>
+          <Input
+            id="password"
+            label="Password"
+            type="password"
+            placeholder="••••••••"
+            icon={Lock}
+            error={errors.password?.message}
+            {...register('password')}
+          />
 
           <Button 
             type="submit" 
@@ -89,15 +93,15 @@ const Login = () => {
             className="w-full"
             isLoading={isSubmitting}
           >
-            Sign In
+            Sign Up
           </Button>
         </form>
 
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-600">
-            Don't have an account?{' '}
-            <Link to="/register" className="font-medium text-primary-600 hover:text-primary-500 transition-colors">
-              Sign up here
+            Already have an account?{' '}
+            <Link to="/login" className="font-medium text-primary-600 hover:text-primary-500 transition-colors">
+              Sign in here
             </Link>
           </p>
         </div>
@@ -106,4 +110,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;

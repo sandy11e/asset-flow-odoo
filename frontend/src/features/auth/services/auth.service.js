@@ -1,34 +1,16 @@
 import api from '@/services/api';
 
 export const authService = {
-  // Interfaces prepared for backend connection
   login: async (credentials) => {
-    // return api.post('/auth/login', credentials);
-    
-    // MOCK RESPONSE (No JWT)
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        if (credentials.email === 'admin@assetflow.com' && credentials.password === 'admin123') {
-          resolve({
-            data: {
-              user: { id: 1, email: 'admin@assetflow.com', role: 'admin', name: 'Admin User' },
-            },
-          });
-        } else if (credentials.email === 'employee@assetflow.com' && credentials.password === 'emp123') {
-          resolve({
-            data: {
-              user: { id: 2, email: 'employee@assetflow.com', role: 'employee', name: 'John Doe' },
-            },
-          });
-        } else {
-          reject(new Error('Invalid email or password'));
-        }
-      }, 1000);
-    });
+    return api.post('/auth/login', credentials);
+  },
+
+  signup: async (userData) => {
+    return api.post('/auth/signup', userData);
   },
 
   forgotPassword: async (data) => {
-    // return api.post('/auth/forgot-password', data);
+    // Keep mock as backend doesn't have this yet
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve({ data: { message: 'Reset link sent if email exists' } });
@@ -37,7 +19,7 @@ export const authService = {
   },
 
   resetPassword: async (data) => {
-    // return api.post('/auth/reset-password', data);
+    // Keep mock as backend doesn't have this yet
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve({ data: { message: 'Password reset successfully' } });
@@ -46,7 +28,7 @@ export const authService = {
   },
 
   logout: async () => {
-    // return api.post('/auth/logout');
+    // We don't have a backend logout route yet, but we'll clear the token in AuthContext
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve({ data: { message: 'Logged out' } });
@@ -55,13 +37,6 @@ export const authService = {
   },
 
   getCurrentUser: async () => {
-    // return api.get('/auth/me');
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({
-          data: { user: { id: 1, email: 'admin@assetflow.com', role: 'admin', name: 'Admin User' } },
-        });
-      }, 500);
-    });
+    return api.get('/profile');
   },
 };

@@ -25,12 +25,22 @@ DashboardContainer.MetricsGrid = ({ children, columns = 4, className = '' }) => 
 
 // Sub-component: Two-Column Widget Layout (e.g., Charts + Activity)
 DashboardContainer.SplitSection = ({ left, right, leftCols = 8, rightCols = 4, className = '' }) => {
+  const colSpanMap = {
+    3: 'lg:col-span-3',
+    4: 'lg:col-span-4',
+    5: 'lg:col-span-5',
+    6: 'lg:col-span-6',
+    7: 'lg:col-span-7',
+    8: 'lg:col-span-8',
+    9: 'lg:col-span-9',
+  };
+
   return (
     <div className={`grid grid-cols-1 lg:grid-cols-12 gap-6 ${className}`}>
-      <div className={`lg:col-span-${leftCols} flex flex-col`}>
+      <div className={`${colSpanMap[leftCols] || 'lg:col-span-8'} flex flex-col`}>
         {left}
       </div>
-      <div className={`lg:col-span-${rightCols} flex flex-col`}>
+      <div className={`${colSpanMap[rightCols] || 'lg:col-span-4'} flex flex-col`}>
         {right}
       </div>
     </div>

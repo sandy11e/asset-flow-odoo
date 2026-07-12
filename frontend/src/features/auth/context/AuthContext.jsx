@@ -10,16 +10,16 @@ export const AuthProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Persistent user state placeholder - purely mock
     const checkAuth = async () => {
       try {
-        const savedUser = localStorage.getItem('assetflow_mock_user');
-        if (savedUser) {
-          setUser(JSON.parse(savedUser));
+        const token = localStorage.getItem('assetflow_token');
+        if (token) {
+          const res = await authService.getCurrentUser();
+          setUser(res.data.user || res.data); // depending on backend structure
           setIsAuthenticated(true);
         }
       } catch (error) {
-        localStorage.removeItem('assetflow_mock_user');
+        localStorage.removeItem('assetflow_token');
         setUser(null);
         setIsAuthenticated(false);
       } finally {
@@ -31,20 +31,36 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async (credentials) => {
-    // Calling the API interface, though currently mocked
     const response = await authService.login(credentials);
-    const mockUser = response.data.user;
+    const authData = response.data || response;
+    const { user: loggedInUser, token } = authData.data || authData;
     
-    // Persistent user state placeholder (No JWT / token logic)
-    localStorage.setItem('assetflow_mock_user', JSON.stringify(mockUser));
-    setUser(mockUser);
+    if (token) {
+      localStorage.setItem('assetflow_token', token);
+    }
+    
+    setUser(loggedInUser);
     setIsAuthenticated(true);
-    return mockUser;
+    return loggedInUser;
+  };
+
+  const register = async (userData) => {
+    const response = await authService.signup(userData);
+    const authData = response.data || response;
+    const { user: loggedInUser, token } = authData.data || authData;
+    
+    if (token) {
+      localStorage.setItem('assetflow_token', token);
+    }
+    
+    setUser(loggedInUser);
+    setIsAuthenticated(true);
+    return loggedInUser;
   };
 
   const logout = async () => {
     await authService.logout();
-    localStorage.removeItem('assetflow_mock_user');
+    localStorage.removeItem('assetflow_token');
     setUser(null);
     setIsAuthenticated(false);
   };
@@ -54,7 +70,7 @@ export const AuthProvider = ({ children }) => {
   }
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, isLoading, login, logout }}>
+    <AuthContext.Provider value={{ user, isAuthenticated, isLoading, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );

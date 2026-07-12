@@ -171,8 +171,8 @@ const OrganizationDashboard = () => {
         </div>
 
         {/* Main Split Grid */}
-        <DashboardContainer.Split
-          leftCol={
+        <DashboardContainer.SplitSection
+          left={
             <div className="space-y-8">
               {(activeTab === 'all' || activeTab === 'orgs') && (
                 <OrganizationOverviewSection
@@ -204,7 +204,7 @@ const OrganizationDashboard = () => {
               )}
             </div>
           }
-          rightCol={
+          right={
             <div className="space-y-6">
               <QuickActionPanel
                 onNewOrg={() => setIsCreateOrgOpen(true)}

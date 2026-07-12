@@ -31,8 +31,11 @@ const signup = async (data) => {
     id: user.id,
 });
 
+    const userResponse = { ...user };
+    delete userResponse.password;
+
     return {
-        user,
+        user: userResponse,
         token,
     };
 };
@@ -59,8 +62,11 @@ const login = async (email, password) => {
     id: user.id,
 });
 
+    const userResponse = { ...user };
+    delete userResponse.password;
+
     return {
-        user,
+        user: userResponse,
         token,
     };
 };

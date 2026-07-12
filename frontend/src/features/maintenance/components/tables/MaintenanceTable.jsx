@@ -54,14 +54,14 @@ const MaintenanceTable = ({ data = [], onView, onEdit, onAssign, onComplete }) =
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex flex-col gap-1 items-start">
-                      <span className={\`inline-flex px-2 py-0.5 text-[10px] font-bold uppercase rounded border \${getPriorityColor(record.priority)}\`}>
+                      <span className={`inline-flex px-2 py-0.5 text-[10px] font-bold uppercase rounded border ${getPriorityColor(record.priority)}`}>
                         {record.priority}
                       </span>
                       <span className="text-xs text-gray-500">{record.issueType}</span>
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                     <span className={\`inline-flex px-2.5 py-1 text-xs font-medium rounded-full border \${getStatusColor(record.status)}\`}>
+                     <span className={`inline-flex px-2.5 py-1 text-xs font-medium rounded-full border ${getStatusColor(record.status)}`}>
                         {record.status}
                       </span>
                   </td>

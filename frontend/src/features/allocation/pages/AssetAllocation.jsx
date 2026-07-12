@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { Plus, Download, Filter, Search } from 'lucide-react';
 import AllocationTable from '../components/tables/AllocationTable';
+import CreateAllocationDialog from '../components/dialogs/CreateAllocationDialog';
 import { allocationMockData } from '../mock/allocation.mock';
 
 const AssetAllocation = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
   
   const filteredAllocations = allocationMockData.filter(alloc => 
     alloc.assetName.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -25,7 +27,10 @@ const AssetAllocation = () => {
             <Download className="w-4 h-4" />
             Export
           </button>
-          <button className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-sm font-medium text-sm w-full sm:w-auto justify-center">
+          <button 
+            onClick={() => setIsCreateOpen(true)}
+            className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-sm font-medium text-sm w-full sm:w-auto justify-center"
+          >
             <Plus className="w-4 h-4" />
             New Allocation
           </button>
@@ -60,6 +65,15 @@ const AssetAllocation = () => {
         onView={(alloc) => console.log('View', alloc)}
         onTransfer={(alloc) => console.log('Transfer', alloc)}
         onReturn={(alloc) => console.log('Return', alloc)}
+      />
+
+      <CreateAllocationDialog 
+        isOpen={isCreateOpen} 
+        onClose={() => setIsCreateOpen(false)} 
+        onSubmit={(data) => {
+          console.log('Created allocation', data);
+          setIsCreateOpen(false);
+        }} 
       />
     </div>
   );

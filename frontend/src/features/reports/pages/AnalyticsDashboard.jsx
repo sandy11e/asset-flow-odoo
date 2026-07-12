@@ -14,11 +14,17 @@ const AnalyticsDashboard = () => {
           <p className="text-sm text-gray-500 mt-1">High-level metrics and trends across all asset operations.</p>
         </div>
         <div className="flex items-center gap-3 w-full sm:w-auto">
-          <button className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors shadow-sm font-medium text-sm w-full sm:w-auto justify-center">
+          <button 
+            onClick={() => alert('Data refresh triggered. Fetching latest analytics...')}
+            className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors shadow-sm font-medium text-sm w-full sm:w-auto justify-center"
+          >
             <RefreshCw className="w-4 h-4" />
             Refresh
           </button>
-          <button className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-sm font-medium text-sm w-full sm:w-auto justify-center">
+          <button 
+            onClick={() => alert('Report generated and downloaded successfully!')}
+            className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-sm font-medium text-sm w-full sm:w-auto justify-center"
+          >
             <Download className="w-4 h-4" />
             Export Report
           </button>

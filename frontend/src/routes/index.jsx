@@ -9,6 +9,7 @@ import NotFound from '@/pages/NotFound';
 
 // Auth Pages (Static Imports for core flow)
 import Login from '@/features/auth/pages/Login';
+import Register from '@/features/auth/pages/Register';
 import ForgotPassword from '@/features/auth/pages/ForgotPassword';
 import ResetPassword from '@/features/auth/pages/ResetPassword';
 import Unauthorized from '@/features/auth/pages/Unauthorized';
@@ -27,8 +28,8 @@ const BranchesList = lazy(() => import('@/features/organization/pages/BranchesLi
 const TeamsList = lazy(() => import('@/features/organization/pages/TeamsList'));
 
 // Assets & Allocations
-const AssetDashboard = lazy(() => import('@/features/assets/pages/AssetDashboard'));
-const AllocationDashboard = lazy(() => import('@/features/allocation/pages/AllocationDashboard'));
+const AssetList = lazy(() => import('@/features/assets/pages/AssetList'));
+const AssetAllocation = lazy(() => import('@/features/allocation/pages/AssetAllocation'));
 
 // Booking
 const BookingDashboardPage = lazy(() => import('@/features/booking/pages/BookingDashboardPage'));
@@ -42,8 +43,9 @@ const BookingHistoryPage = lazy(() => import('@/features/booking/pages/BookingHi
 const BookingDetailPage = lazy(() => import('@/features/booking/pages/BookingDetailPage'));
 const ApprovalPage = lazy(() => import('@/features/booking/pages/ApprovalPage'));
 
-// Maintenance & Reports
-const MaintenanceDashboard = lazy(() => import('@/features/maintenance/pages/MaintenanceDashboard'));
+// Maintenance, Audit & Reports
+const MaintenanceRequests = lazy(() => import('@/features/maintenance/pages/MaintenanceRequests'));
+const AuditList = lazy(() => import('@/features/audits/pages/AuditList'));
 const AnalyticsDashboard = lazy(() => import('@/features/reports/pages/AnalyticsDashboard'));
 
 // Notifications & Settings
@@ -69,6 +71,7 @@ export const router = createBrowserRouter([
         element: <AuthLayout />,
         children: [
           { path: ROUTES.LOGIN, element: <Login /> },
+          { path: '/register', element: <Register /> },
           { path: '/forgot-password', element: <ForgotPassword /> },
           { path: '/reset-password', element: <ResetPassword /> },
           { path: '/session-expired', element: <SessionExpired /> }
@@ -94,9 +97,9 @@ export const router = createBrowserRouter([
           { path: ROUTES.TEAMS, element: <Suspense fallback={<PageLoader />}><TeamsList /></Suspense> },
           
           // Assets & Allocation
-          { path: ROUTES.ASSETS, element: <Suspense fallback={<PageLoader />}><AssetDashboard /></Suspense> },
-          { path: '/allocation', element: <Suspense fallback={<PageLoader />}><AllocationDashboard /></Suspense> },
-          { path: '/transfer', element: <Suspense fallback={<PageLoader />}><AllocationDashboard /></Suspense> },
+          { path: ROUTES.ASSETS, element: <Suspense fallback={<PageLoader />}><AssetList /></Suspense> },
+          { path: '/allocation', element: <Suspense fallback={<PageLoader />}><AssetAllocation /></Suspense> },
+          { path: '/transfer', element: <Suspense fallback={<PageLoader />}><AssetAllocation /></Suspense> },
           
           // Booking
           { path: ROUTES.BOOKING_DASHBOARD, element: <Suspense fallback={<PageLoader />}><BookingDashboardPage /></Suspense> },
@@ -111,7 +114,8 @@ export const router = createBrowserRouter([
           { path: ROUTES.BOOKING_APPROVALS, element: <Suspense fallback={<PageLoader />}><ApprovalPage /></Suspense> },
 
           // New Modules (V8-V11)
-          { path: ROUTES.MAINTENANCE, element: <Suspense fallback={<PageLoader />}><MaintenanceDashboard /></Suspense> },
+          { path: ROUTES.MAINTENANCE, element: <Suspense fallback={<PageLoader />}><MaintenanceRequests /></Suspense> },
+          { path: ROUTES.AUDITS, element: <Suspense fallback={<PageLoader />}><AuditList /></Suspense> },
           { path: ROUTES.REPORTS, element: <Suspense fallback={<PageLoader />}><AnalyticsDashboard /></Suspense> },
           { path: ROUTES.NOTIFICATIONS, element: <Suspense fallback={<PageLoader />}><AllNotifications /></Suspense> },
           { path: ROUTES.PROFILE, element: <Suspense fallback={<PageLoader />}><AccountSettings /></Suspense> },

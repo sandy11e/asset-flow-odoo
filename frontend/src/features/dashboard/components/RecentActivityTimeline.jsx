@@ -14,17 +14,19 @@ export const RecentActivityTimeline = ({ activities = [] }) => {
                 <div className="relative flex space-x-3">
                   <div>
                     <span className="h-8 w-8 rounded-full bg-primary-100 flex items-center justify-center ring-8 ring-white">
-                      <span className="text-primary-600 text-xs font-bold">{activity.user.charAt(0)}</span>
+                      <span className="text-primary-600 text-xs font-bold">
+                        {activity.userName ? activity.userName.charAt(0).toUpperCase() : 'U'}
+                      </span>
                     </span>
                   </div>
                   <div className="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
                     <div>
                       <p className="text-sm text-gray-500">
-                        {activity.action} <span className="font-medium text-gray-900">{activity.item}</span>
+                        {activity.action} {activity.item && <span className="font-medium text-gray-900">{activity.item}</span>}
                       </p>
                     </div>
                     <div className="text-right text-sm whitespace-nowrap text-gray-500">
-                      {activity.time}
+                      {new Date(activity.createdAt || activity.time || Date.now()).toLocaleDateString()}
                     </div>
                   </div>
                 </div>

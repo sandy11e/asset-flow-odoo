@@ -1,5 +1,4 @@
 import React from 'react';
-import { clsx } from 'clsx';
 
 const StatusChip = ({ status }) => {
   const getStatusStyles = (statusText) => {
@@ -22,10 +21,7 @@ const StatusChip = ({ status }) => {
 
   return (
     <span 
-      className={clsx(
-        "inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium border shadow-sm",
-        getStatusStyles(status)
-      )}
+      className={`inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium border shadow-sm ${getStatusStyles(status)}`}
     >
       {status || 'Unknown'}
     </span>
