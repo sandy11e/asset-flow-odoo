@@ -21,6 +21,9 @@ export const ROUTES = {
   BOOKING_APPROVALS: '/booking/approvals',
   MAINTENANCE: '/maintenance',
   AUDITS: '/audits',
+  REPORTS: '/reports',
+  NOTIFICATIONS: '/notifications',
+  PROFILE: '/profile',
   SETTINGS: '/settings',
   NOT_FOUND: '*',
 };
