@@ -3,10 +3,17 @@ import { ROUTES } from './routes';
 import MainLayout from '@/layouts/MainLayout';
 import AuthLayout from '@/layouts/AuthLayout';
 import ProtectedRoute from '@/components/navigation/ProtectedRoute';
+import GuestRoute from '@/components/navigation/GuestRoute';
 import NotFound from '@/pages/NotFound';
 
+// Auth Pages
+import Login from '@/features/auth/pages/Login';
+import ForgotPassword from '@/features/auth/pages/ForgotPassword';
+import ResetPassword from '@/features/auth/pages/ResetPassword';
+import Unauthorized from '@/features/auth/pages/Unauthorized';
+import SessionExpired from '@/features/auth/pages/SessionExpired';
+
 // Placeholders for routes to be developed in future phases
-const LoginPlaceholder = () => <div className="p-4 text-center">Login Page (Pending)</div>;
 const DashboardPlaceholder = () => <div className="p-4">Dashboard Module (Pending)</div>;
 
 export const router = createBrowserRouter([
@@ -15,11 +22,28 @@ export const router = createBrowserRouter([
     element: <Navigate to={ROUTES.DASHBOARD} replace />,
   },
   {
-    element: <AuthLayout />,
+    element: <GuestRoute />,
     children: [
       {
-        path: ROUTES.LOGIN,
-        element: <LoginPlaceholder />,
+        element: <AuthLayout />,
+        children: [
+          {
+            path: ROUTES.LOGIN,
+            element: <Login />,
+          },
+          {
+            path: '/forgot-password',
+            element: <ForgotPassword />,
+          },
+          {
+            path: '/reset-password',
+            element: <ResetPassword />,
+          },
+          {
+            path: '/session-expired',
+            element: <SessionExpired />,
+          }
+        ],
       },
     ],
   },
@@ -37,6 +61,10 @@ export const router = createBrowserRouter([
         ],
       },
     ],
+  },
+  {
+    path: '/unauthorized',
+    element: <AuthLayout><Unauthorized /></AuthLayout>,
   },
   {
     path: ROUTES.NOT_FOUND,
