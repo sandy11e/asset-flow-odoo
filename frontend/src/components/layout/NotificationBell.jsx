@@ -1,6 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Bell, AlertTriangle, CheckCircle, Clock, ExternalLink } from 'lucide-react';
+import { useClickOutside } from '@/hooks/useClickOutside';
 
 const placeholderNotifications = [
   {
@@ -36,15 +37,7 @@ const NotificationBell = () => {
 
   const unreadCount = notifications.filter((n) => n.unread).length;
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  useClickOutside(dropdownRef, () => setIsOpen(false), isOpen);
 
   const markAllAsRead = () => {
     setNotifications(notifications.map((n) => ({ ...n, unread: false })));

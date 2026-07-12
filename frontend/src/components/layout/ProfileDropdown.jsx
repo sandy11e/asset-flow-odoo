@@ -1,22 +1,15 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { User, Settings, LogOut, Shield, ChevronDown, CheckCircle2 } from 'lucide-react';
 import Avatar from '@/components/ui/Avatar';
+import { useClickOutside } from '@/hooks/useClickOutside';
 
 const ProfileDropdown = () => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
 
-  // Close dropdown on click outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  // Use custom hook instead of duplicate useEffect
+  useClickOutside(dropdownRef, () => setIsOpen(false), isOpen);
 
   return (
     <div className="relative inline-block text-left" ref={dropdownRef}>

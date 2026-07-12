@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useId } from 'react';
 
 const Input = forwardRef(({
   label,
@@ -8,12 +8,13 @@ const Input = forwardRef(({
   id,
   ...props
 }, ref) => {
-  const inputId = id || Math.random().toString(36).substring(7);
+  const generatedId = useId();
+  const inputId = id || generatedId;
 
   return (
     <div className={`w-full ${className}`}>
       {label && (
-        <label htmlFor={inputId} className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor={inputId} className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
           {label}
         </label>
       )}
@@ -26,14 +27,14 @@ const Input = forwardRef(({
         <input
           ref={ref}
           id={inputId}
-          className={`block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm border px-3 py-2 ${
+          className={`block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-sidebar-hover text-gray-900 dark:text-white shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm border px-3 py-2 ${
             Icon ? 'pl-10' : ''
           } ${error ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : ''}`}
           {...props}
         />
       </div>
       {error && (
-        <p className="mt-1 text-sm text-red-600">{error}</p>
+        <p className="mt-1 text-sm text-red-600 dark:text-red-400">{error}</p>
       )}
     </div>
   );
