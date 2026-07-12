@@ -13,8 +13,9 @@ import ResetPassword from '@/features/auth/pages/ResetPassword';
 import Unauthorized from '@/features/auth/pages/Unauthorized';
 import SessionExpired from '@/features/auth/pages/SessionExpired';
 
+import DashboardHome from '@/features/dashboard/pages/DashboardHome';
+
 // Placeholders for routes to be developed in future phases
-const DashboardPlaceholder = () => <div className="p-4">Dashboard Module (Pending)</div>;
 
 export const router = createBrowserRouter([
   {
@@ -55,7 +56,7 @@ export const router = createBrowserRouter([
         children: [
           {
             path: ROUTES.DASHBOARD,
-            element: <DashboardPlaceholder />,
+            element: <DashboardHome />,
           },
           // More protected routes will go here
         ],
