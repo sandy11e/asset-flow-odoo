@@ -6,6 +6,10 @@ const departmentRoutes = require("./department.routes");
 const authRoutes = require("./auth.routes");
 const authMiddleware = require("../middlewares/auth.middleware");
 const categoryRoutes = require("./category.routes");
+const userRoutes = require("./user.routes");
+const assetRoutes = require("./asset.routes");
+router.use("/assets", assetRoutes);
+router.use("/users", userRoutes);
 router.use("/departments", departmentRoutes);
 router.use("/categories", categoryRoutes);
 

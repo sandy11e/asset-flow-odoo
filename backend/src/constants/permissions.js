@@ -7,6 +7,14 @@ const PERMISSIONS = {
 "category:read",
 "category:update",
 "category:delete",
+"user:read",
+"user:update",
+"asset:create",
+"asset:read",
+"asset:update",
+"asset:delete",
+"asset:allocate",
+"asset:transfer",
 ],
 
     ASSET_MANAGER: [

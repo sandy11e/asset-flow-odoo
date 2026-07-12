@@ -29,6 +29,23 @@ enum CategoryStatus {
   INACTIVE
 }
 
+enum AssetStatus {
+  AVAILABLE
+  ALLOCATED
+  RESERVED
+  UNDER_MAINTENANCE
+  LOST
+  RETIRED
+  DISPOSED
+}
+
+enum AssetCondition {
+  EXCELLENT
+  GOOD
+  FAIR
+  POOR
+}
+
 model Department {
   id          String           @id @default(uuid())
   name        String           @unique
@@ -51,6 +68,8 @@ model AssetCategory {
   description String?
   status      CategoryStatus @default(ACTIVE)
 
+  assets Asset[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -58,11 +77,13 @@ model AssetCategory {
 }
 
 model User {
-  id       String  @id @default(uuid())
+  id String @id @default(uuid())
+
   name     String
-  email    String  @unique
+  email    String @unique
   password String
-  phone    String?
+
+  phone String?
 
   role   UserRole   @default(EMPLOYEE)
   status UserStatus @default(ACTIVE)
@@ -75,4 +96,41 @@ model User {
 
   @@index([departmentId])
   @@map("users")
+}
+
+model Asset {
+  id String @id @default(uuid())
+
+  assetTag String @unique
+  name     String
+
+  serialNumber String? @unique
+
+  categoryId String
+  category   AssetCategory @relation(fields: [categoryId], references: [id])
+
+  acquisitionDate DateTime?
+
+  acquisitionCost Decimal? @db.Decimal(10, 2)
+
+  condition AssetCondition @default(GOOD)
+
+  status AssetStatus @default(AVAILABLE)
+
+  location String
+
+  isBookable Boolean @default(false)
+
+  qrCode String?
+
+  imageUrl String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([assetTag])
+  @@index([serialNumber])
+  @@index([status])
+  @@index([categoryId])
+  @@map("assets")
 }
