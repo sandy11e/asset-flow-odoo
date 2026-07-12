@@ -1,5 +1,5 @@
 const prisma = require("../config/prisma");
-
+const generateQRCode = require("../utils/qrcode");
 const generateAssetTag = async () => {
 
     const count = await prisma.asset.count();
@@ -36,18 +36,26 @@ const createAsset = async (data) => {
 
     const assetTag = await generateAssetTag();
 
-  return prisma.asset.create({
-    data: {
-        ...data,
-        acquisitionDate: data.acquisitionDate
-            ? new Date(data.acquisitionDate)
-            : null,
+    const qrData = JSON.stringify({
         assetTag,
-    },
-    include: {
-        category: true,
-    },
-});
+        name: data.name,
+    });
+
+    const qrCode = await generateQRCode(qrData);
+
+    return prisma.asset.create({
+        data: {
+            ...data,
+            acquisitionDate: data.acquisitionDate
+                ? new Date(data.acquisitionDate)
+                : null,
+            assetTag,
+            qrCode,
+        },
+        include: {
+            category: true,
+        },
+    });
 
 };
 

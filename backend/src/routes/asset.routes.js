@@ -32,5 +32,10 @@ router.patch(
     authorize("asset:update"),
     controller.updateAsset
 );
+router.get(
+    "/:id/qr",
+    authorize("asset:read"),
+    controller.getQRCode
+);
 
 module.exports = router;

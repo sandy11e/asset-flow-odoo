@@ -74,3 +74,27 @@ exports.updateAsset = async (req, res) => {
         return response.error(res, err.message);
     }
 };
+exports.getQRCode = async (req, res) => {
+
+    try {
+
+        const asset = await assetService.getAsset(req.params.id);
+
+        if (!asset) {
+            return response.error(res, "Asset not found", 404);
+        }
+
+        return response.success(
+            res,
+            "QR fetched successfully",
+            {
+                assetTag: asset.assetTag,
+                qrCode: asset.qrCode,
+            }
+        );
+
+    } catch (err) {
+        return response.error(res, err.message);
+    }
+
+};
