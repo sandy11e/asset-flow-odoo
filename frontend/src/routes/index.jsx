@@ -20,7 +20,20 @@ import OrganizationDashboard from '@/features/organization/pages/OrganizationDas
 import OrganizationsList from '@/features/organization/pages/OrganizationsList';
 import DepartmentsList from '@/features/organization/pages/DepartmentsList';
 import BranchesList from '@/features/organization/pages/BranchesList';
+// Teams
 import TeamsList from '@/features/organization/pages/TeamsList';
+
+// Booking & Reservation Pages
+import BookingDashboardPage from '@/features/booking/pages/BookingDashboardPage';
+import MeetingRoomBookingPage from '@/features/booking/pages/MeetingRoomBookingPage';
+import VehicleBookingPage from '@/features/booking/pages/VehicleBookingPage';
+import EquipmentBookingPage from '@/features/booking/pages/EquipmentBookingPage';
+import WorkspaceBookingPage from '@/features/booking/pages/WorkspaceBookingPage';
+import LabBookingPage from '@/features/booking/pages/LabBookingPage';
+import BookingCalendarPage from '@/features/booking/pages/BookingCalendarPage';
+import BookingHistoryPage from '@/features/booking/pages/BookingHistoryPage';
+import BookingDetailPage from '@/features/booking/pages/BookingDetailPage';
+import ApprovalPage from '@/features/booking/pages/ApprovalPage';
 
 // Placeholders for routes to be developed in future phases
 
@@ -84,6 +97,46 @@ export const router = createBrowserRouter([
           {
             path: ROUTES.TEAMS,
             element: <TeamsList />,
+          },
+          {
+            path: ROUTES.BOOKING_DASHBOARD,
+            element: <BookingDashboardPage />,
+          },
+          {
+            path: ROUTES.BOOKING_MEETING_ROOMS,
+            element: <MeetingRoomBookingPage />,
+          },
+          {
+            path: ROUTES.BOOKING_VEHICLES,
+            element: <VehicleBookingPage />,
+          },
+          {
+            path: ROUTES.BOOKING_EQUIPMENT,
+            element: <EquipmentBookingPage />,
+          },
+          {
+            path: ROUTES.BOOKING_WORKSPACES,
+            element: <WorkspaceBookingPage />,
+          },
+          {
+            path: ROUTES.BOOKING_LABS,
+            element: <LabBookingPage />,
+          },
+          {
+            path: ROUTES.BOOKING_CALENDAR,
+            element: <BookingCalendarPage />,
+          },
+          {
+            path: ROUTES.BOOKING_HISTORY,
+            element: <BookingHistoryPage />,
+          },
+          {
+            path: ROUTES.BOOKING_DETAILS,
+            element: <BookingDetailPage />,
+          },
+          {
+            path: ROUTES.BOOKING_APPROVALS,
+            element: <ApprovalPage />,
           },
           // More protected routes will go here
         ],
