@@ -2,6 +2,7 @@ const prisma = require("../config/prisma");
 const bcrypt = require("bcryptjs");
 const { generateToken } = require("../utils/jwt");
 
+const PERMISSIONS = require("../constants/permissions");
 const signup = async (data) => {
 
     const existingUser = await prisma.user.findUnique({
@@ -22,13 +23,13 @@ const signup = async (data) => {
             email: data.email,
             password: hashedPassword,
             phone: data.phone,
+            role: data.role || PERMISSIONS.USER, 
         },
     });
 
     const token = generateToken({
-        id: user.id,
-        role: user.role,
-    });
+    id: user.id,
+});
 
     return {
         user,
@@ -55,9 +56,8 @@ const login = async (email, password) => {
     }
 
     const token = generateToken({
-        id: user.id,
-        role: user.role,
-    });
+    id: user.id,
+});
 
     return {
         user,

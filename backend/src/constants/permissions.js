@@ -1,0 +1,64 @@
+const PERMISSIONS = {
+    ADMIN: ["*"],
+
+    ASSET_MANAGER: [
+        "dashboard:read",
+
+        "department:read",
+
+        "category:create",
+        "category:read",
+        "category:update",
+
+        "asset:create",
+        "asset:read",
+        "asset:update",
+        "asset:allocate",
+        "asset:transfer",
+
+        "booking:read",
+
+        "maintenance:approve",
+        "maintenance:update",
+
+        "audit:read",
+
+        "notification:read"
+    ],
+
+    DEPARTMENT_HEAD: [
+        "dashboard:read",
+
+        "department:read",
+
+        "asset:read",
+        "asset:allocate",
+
+        "booking:create",
+        "booking:approve",
+
+        "transfer:approve",
+
+        "maintenance:read",
+
+        "notification:read"
+    ],
+
+    EMPLOYEE: [
+        "dashboard:read",
+
+        "asset:read",
+
+        "booking:create",
+        "booking:update",
+        "booking:cancel",
+
+        "maintenance:create",
+
+        "notification:read",
+
+        "profile:update"
+    ]
+};
+
+module.exports = PERMISSIONS;
