@@ -3,6 +3,8 @@ const cors = require("cors");
 const helmet = require("helmet");
 const morgan = require("morgan");
 
+const routes = require("./routes");
+
 const app = express();
 
 app.use(helmet());
@@ -17,5 +19,7 @@ app.get("/", (req, res) => {
     message: "AssetFlow API is running",
   });
 });
+
+app.use("/api", routes);
 
 module.exports = app;
