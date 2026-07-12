@@ -1,5 +1,5 @@
 const prisma = require("../config/prisma");
-
+const activityService = require("./activity.service");
 const createBooking = async (data, userId) => {
 
     const overlap = await prisma.resourceBooking.findFirst({
@@ -40,6 +40,12 @@ const createBooking = async (data, userId) => {
             user: true,
         },
     });
+    await activityService.logActivity(
+    booking.user.name,
+    `Booked ${booking.asset.assetTag}`
+);
+
+return booking;
 
 };
 

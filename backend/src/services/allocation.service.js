@@ -1,5 +1,5 @@
 const prisma = require("../config/prisma");
-
+const activityService = require("./activity.service");
 const allocateAsset = async (data, allocatedById) => {
 
     const asset = await prisma.asset.findUnique({
@@ -50,7 +50,10 @@ const allocateAsset = async (data, allocatedById) => {
             status: "ALLOCATED",
         },
     });
-
+await activityService.logActivity(
+    "Admin",
+    `Allocated ${allocation.asset.assetTag} to ${allocation.user.name}`
+);
     return allocation;
 };
 

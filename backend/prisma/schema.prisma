@@ -7,6 +7,10 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum AuditStatus {
+  OPEN
+  CLOSED
+}
 enum UserRole {
   ADMIN
   ASSET_MANAGER
@@ -112,7 +116,7 @@ model User {
   allocations         AssetAllocation[]
   bookings            ResourceBooking[]
   maintenanceRequests MaintenanceRequest[]
-
+  notifications Notification[]
   allocatedAssets AssetAllocation[] @relation("AllocatedBy")
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
@@ -230,4 +234,46 @@ model MaintenanceRequest {
   updatedAt DateTime @updatedAt
 
   @@map("maintenance_requests")
+}
+model Notification {
+  id        String   @id @default(uuid())
+
+  title     String
+  message   String
+
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id])
+
+  isRead    Boolean  @default(false)
+
+  createdAt DateTime @default(now())
+
+  @@map("notifications")
+}
+model ActivityLog {
+  id        String   @id @default(uuid())
+
+  userName  String
+
+  action    String
+
+  createdAt DateTime @default(now())
+
+  @@map("activity_logs")
+}
+
+model AuditCycle {
+  id           String        @id @default(uuid())
+
+  title        String
+  department   String
+
+  startDate    DateTime
+  endDate      DateTime
+
+  status       AuditStatus   @default(OPEN)
+
+  createdAt    DateTime      @default(now())
+
+  @@map("audit_cycles")
 }

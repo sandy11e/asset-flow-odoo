@@ -1,5 +1,7 @@
 const prisma = require("../config/prisma");
 const generateQRCode = require("../utils/qrcode");
+const activityService = require("./activity.service");
+
 const generateAssetTag = async () => {
 
     const count = await prisma.asset.count();
@@ -61,6 +63,12 @@ const qrCode = await generateQRCode(qrData);
         },
     });
 
+await activityService.logActivity(
+    "Admin",
+    `Created asset ${asset.assetTag}`
+);
+
+return asset;
 };
 
 const getAssets = () => {

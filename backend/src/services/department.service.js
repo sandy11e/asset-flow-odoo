@@ -1,5 +1,5 @@
 const prisma = require("../config/prisma");
-
+const activityService = require("./activity.service");
 const createDepartment = async (data) => {
 
     const exists = await prisma.department.findUnique({
@@ -13,6 +13,13 @@ const createDepartment = async (data) => {
     return prisma.department.create({
         data,
     });
+    
+    await activityService.logActivity(
+    "Admin",
+    `Created department ${department.name}`
+);
+
+return department;
 
 };
 

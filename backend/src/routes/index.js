@@ -12,7 +12,15 @@ const allocationRoutes = require("./allocation.routes");
 const bookingRoutes = require("./booking.routes");
 const maintenanceRoutes = require("./maintenance.routes");
 const dashboardRoutes = require("./dashboard.routes");
+const reportRoutes = require("./report.routes");
+const notificationRoutes = require("./notification.routes");
+const activityRoutes = require("./activity.routes");
+const auditRoutes = require("./audit.routes");
 
+router.use("/audit", auditRoutes);
+router.use("/activity", activityRoutes);
+router.use("/notifications", notificationRoutes);
+router.use("/reports", reportRoutes);
 router.use("/dashboard", dashboardRoutes);
 router.use("/maintenance", maintenanceRoutes);
 router.use("/bookings", bookingRoutes);

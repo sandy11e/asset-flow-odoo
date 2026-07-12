@@ -1,5 +1,5 @@
 const prisma = require("../config/prisma");
-
+const activityService = require("./activity.service");
 const raiseRequest = async (data, userId) => {
 
     return prisma.maintenanceRequest.create({
@@ -14,6 +14,12 @@ const raiseRequest = async (data, userId) => {
             reportedBy: true,
         },
     });
+    await activityService.logActivity(
+    request.reportedBy.name,
+    `Raised maintenance request for ${request.asset.assetTag}`
+);
+
+return request;
 
 };
 
