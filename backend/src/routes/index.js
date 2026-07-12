@@ -8,6 +8,12 @@ const authMiddleware = require("../middlewares/auth.middleware");
 const categoryRoutes = require("./category.routes");
 const userRoutes = require("./user.routes");
 const assetRoutes = require("./asset.routes");
+const allocationRoutes = require("./allocation.routes");
+const bookingRoutes = require("./booking.routes");
+
+router.use("/bookings", bookingRoutes);
+
+router.use("/allocations", allocationRoutes);
 router.use("/assets", assetRoutes);
 router.use("/users", userRoutes);
 router.use("/departments", departmentRoutes);

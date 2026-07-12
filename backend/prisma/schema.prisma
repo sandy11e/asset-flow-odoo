@@ -19,6 +19,13 @@ enum UserStatus {
   INACTIVE
 }
 
+enum BookingStatus {
+  UPCOMING
+  ONGOING
+  COMPLETED
+  CANCELLED
+}
+
 enum DepartmentStatus {
   ACTIVE
   INACTIVE
@@ -37,6 +44,11 @@ enum AssetStatus {
   LOST
   RETIRED
   DISPOSED
+}
+
+enum AllocationStatus {
+  ACTIVE
+  RETURNED
 }
 
 enum AssetCondition {
@@ -88,11 +100,13 @@ model User {
   role   UserRole   @default(EMPLOYEE)
   status UserStatus @default(ACTIVE)
 
-  departmentId String?
-  department   Department? @relation(fields: [departmentId], references: [id], onDelete: SetNull)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  departmentId    String?
+  department      Department?       @relation(fields: [departmentId], references: [id], onDelete: SetNull)
+  allocations     AssetAllocation[]
+  bookings        ResourceBooking[]
+  allocatedAssets AssetAllocation[] @relation("AllocatedBy")
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
 
   @@index([departmentId])
   @@map("users")
@@ -123,14 +137,65 @@ model Asset {
 
   qrCode String?
 
-  imageUrl String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  imageUrl    String?
+  allocations AssetAllocation[]
+  bookings    ResourceBooking[]
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
 
   @@index([assetTag])
   @@index([serialNumber])
   @@index([status])
   @@index([categoryId])
   @@map("assets")
+}
+
+model AssetAllocation {
+  id String @id @default(uuid())
+
+  assetId String
+  asset   Asset  @relation(fields: [assetId], references: [id])
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  allocatedById String
+  allocatedBy   User   @relation("AllocatedBy", fields: [allocatedById], references: [id])
+
+  allocatedAt DateTime @default(now())
+
+  expectedReturnDate DateTime?
+
+  returnedAt DateTime?
+
+  status AllocationStatus @default(ACTIVE)
+
+  remarks String?
+
+  @@index([assetId])
+  @@index([userId])
+  @@map("asset_allocations")
+}
+
+model ResourceBooking {
+  id String @id @default(uuid())
+
+  assetId String
+  asset   Asset  @relation(fields: [assetId], references: [id])
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  title String
+
+  startTime DateTime
+  endTime   DateTime
+
+  status BookingStatus @default(UPCOMING)
+
+  createdAt DateTime @default(now())
+
+  @@index([assetId])
+  @@index([userId])
+  @@map("resource_bookings")
 }

@@ -15,6 +15,8 @@ const PERMISSIONS = {
 "asset:delete",
 "asset:allocate",
 "asset:transfer",
+"booking:create",
+"booking:read",
 ],
 
     ASSET_MANAGER: [
@@ -39,7 +41,8 @@ const PERMISSIONS = {
 
         "audit:read",
 
-        "notification:read"
+        "notification:read",
+        "booking:read",
     ],
 
     DEPARTMENT_HEAD: [
@@ -73,7 +76,8 @@ const PERMISSIONS = {
 
         "notification:read",
 
-        "profile:update"
+        "profile:update",
+        "booking:create",
     ]
 };
 
