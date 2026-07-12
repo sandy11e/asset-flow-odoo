@@ -36,12 +36,16 @@ const createAsset = async (data) => {
 
     const assetTag = await generateAssetTag();
 
-    const qrData = JSON.stringify({
-        assetTag,
-        name: data.name,
-    });
+const qrData = JSON.stringify({
+    assetId: assetTag,
+    assetTag,
+    name: data.name,
+    serialNumber: data.serialNumber,
+    category: category.name,
+    location: data.location,
+});
 
-    const qrCode = await generateQRCode(qrData);
+const qrCode = await generateQRCode(qrData);
 
     return prisma.asset.create({
         data: {
