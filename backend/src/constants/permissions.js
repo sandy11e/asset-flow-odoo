@@ -17,6 +17,9 @@ const PERMISSIONS = {
 "asset:transfer",
 "booking:create",
 "booking:read",
+"maintenance:create",
+"maintenance:read",
+"maintenance:approve",
 ],
 
     ASSET_MANAGER: [
@@ -43,6 +46,8 @@ const PERMISSIONS = {
 
         "notification:read",
         "booking:read",
+        "maintenance:read",
+"maintenance:approve",
     ],
 
     DEPARTMENT_HEAD: [
@@ -78,6 +83,7 @@ const PERMISSIONS = {
 
         "profile:update",
         "booking:create",
+        "maintenance:create",
     ]
 };
 

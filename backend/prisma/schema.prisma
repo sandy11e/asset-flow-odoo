@@ -26,6 +26,13 @@ enum BookingStatus {
   CANCELLED
 }
 
+enum MaintenanceStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  RESOLVED
+}
+
 enum DepartmentStatus {
   ACTIVE
   INACTIVE
@@ -100,10 +107,12 @@ model User {
   role   UserRole   @default(EMPLOYEE)
   status UserStatus @default(ACTIVE)
 
-  departmentId    String?
-  department      Department?       @relation(fields: [departmentId], references: [id], onDelete: SetNull)
-  allocations     AssetAllocation[]
-  bookings        ResourceBooking[]
+  departmentId        String?
+  department          Department?          @relation(fields: [departmentId], references: [id], onDelete: SetNull)
+  allocations         AssetAllocation[]
+  bookings            ResourceBooking[]
+  maintenanceRequests MaintenanceRequest[]
+
   allocatedAssets AssetAllocation[] @relation("AllocatedBy")
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
@@ -137,11 +146,14 @@ model Asset {
 
   qrCode String?
 
-  imageUrl    String?
-  allocations AssetAllocation[]
-  bookings    ResourceBooking[]
-  createdAt   DateTime          @default(now())
-  updatedAt   DateTime          @updatedAt
+  imageUrl String?
+
+  allocations         AssetAllocation[]
+  bookings            ResourceBooking[]
+  maintenanceRequests MaintenanceRequest[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([assetTag])
   @@index([serialNumber])
@@ -198,4 +210,24 @@ model ResourceBooking {
   @@index([assetId])
   @@index([userId])
   @@map("resource_bookings")
+}
+
+model MaintenanceRequest {
+  id String @id @default(uuid())
+
+  assetId String
+  asset   Asset  @relation(fields: [assetId], references: [id])
+
+  reportedById String
+  reportedBy   User   @relation(fields: [reportedById], references: [id])
+
+  issue    String
+  priority String
+
+  status MaintenanceStatus @default(PENDING)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("maintenance_requests")
 }
