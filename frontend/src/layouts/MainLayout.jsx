@@ -1,36 +1,67 @@
+import React, { useState, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
+import Sidebar from '@/components/layout/Sidebar';
+import MobileSidebar from '@/components/layout/MobileSidebar';
+import Navbar from '@/components/layout/Navbar';
+import MainContentWrapper from '@/components/layout/MainContentWrapper';
+import Footer from '@/components/layout/Footer';
 
 const MainLayout = () => {
+  // Persist sidebar collapse state in localStorage
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
+    try {
+      const saved = localStorage.getItem('assetflow_sidebar_collapsed');
+      return saved ? JSON.parse(saved) : false;
+    } catch (e) {
+      return false;
+    }
+  });
+
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('assetflow_sidebar_collapsed', JSON.stringify(isSidebarCollapsed));
+    } catch (e) {
+      // Ignore localStorage errors
+    }
+  }, [isSidebarCollapsed]);
+
+  const toggleSidebarCollapse = () => {
+    setIsSidebarCollapsed((prev) => !prev);
+  };
+
   return (
     <div className="flex h-screen w-full overflow-hidden bg-gray-50">
-      {/* Sidebar Placeholder */}
-      <aside className="w-64 bg-sidebar-bg text-sidebar-text hidden md:flex flex-col">
-        <div className="p-4 border-b border-sidebar-hover">
-          <h1 className="text-xl font-bold tracking-wider">AssetFlow</h1>
-        </div>
-        <div className="flex-1 p-4">
-          <p className="text-sm text-gray-400">Navigation Menu</p>
-        </div>
-      </aside>
+      {/* Desktop & Tablet Sidebar (Collapsible) */}
+      <Sidebar
+        isCollapsed={isSidebarCollapsed}
+        onToggleCollapse={toggleSidebarCollapse}
+      />
 
-      <main className="flex-1 flex flex-col h-full overflow-hidden">
-        {/* Header Placeholder */}
-        <header className="h-16 bg-white border-b border-gray-200 flex items-center px-6 justify-between shrink-0">
-          <div className="flex items-center gap-4 md:hidden">
-            <span className="font-bold">AssetFlow</span>
-          </div>
-          <div className="ml-auto flex items-center gap-4">
-            <div className="w-8 h-8 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center font-bold">
-              U
-            </div>
-          </div>
-        </header>
+      {/* Mobile Drawer Sidebar */}
+      <MobileSidebar
+        isOpen={isMobileMenuOpen}
+        onClose={() => setIsMobileMenuOpen(false)}
+      />
 
-        {/* Page Content */}
-        <div className="flex-1 overflow-auto p-6">
-          <Outlet />
+      {/* Main Container Column */}
+      <div className="flex-1 flex flex-col h-full min-w-0 overflow-hidden">
+        {/* Top Navbar */}
+        <Navbar
+          onOpenMobileMenu={() => setIsMobileMenuOpen(true)}
+        />
+
+        {/* Scrollable Main Content & Footer */}
+        <div className="flex-1 flex flex-col min-h-0 overflow-y-auto">
+          <MainContentWrapper>
+            <Outlet />
+          </MainContentWrapper>
+
+          {/* Enterprise Footer */}
+          <Footer />
         </div>
-      </main>
+      </div>
     </div>
   );
 };
