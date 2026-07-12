@@ -11,7 +11,9 @@ const assetRoutes = require("./asset.routes");
 const allocationRoutes = require("./allocation.routes");
 const bookingRoutes = require("./booking.routes");
 const maintenanceRoutes = require("./maintenance.routes");
+const dashboardRoutes = require("./dashboard.routes");
 
+router.use("/dashboard", dashboardRoutes);
 router.use("/maintenance", maintenanceRoutes);
 router.use("/bookings", bookingRoutes);
 
