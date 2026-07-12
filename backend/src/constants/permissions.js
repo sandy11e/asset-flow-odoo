@@ -2,7 +2,12 @@ const PERMISSIONS = {
     ADMIN: ["department:create",
 "department:read",
 "department:update",
-"department:delete",],
+"department:delete",
+"category:create",
+"category:read",
+"category:update",
+"category:delete",
+],
 
     ASSET_MANAGER: [
         "dashboard:read",

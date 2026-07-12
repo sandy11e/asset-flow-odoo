@@ -23,25 +23,26 @@ enum DepartmentStatus {
   ACTIVE
   INACTIVE
 }
+
 enum CategoryStatus {
   ACTIVE
   INACTIVE
 }
 
 model Department {
-  id                 String             @id @default(uuid())
-  name               String             @unique
-  description        String?
-  status             DepartmentStatus   @default(ACTIVE)
+  id          String           @id @default(uuid())
+  name        String           @unique
+  description String?
+  status      DepartmentStatus @default(ACTIVE)
 
   parentDepartmentId String?
-  parentDepartment   Department?        @relation("DepartmentHierarchy", fields: [parentDepartmentId], references: [id])
-  childDepartments   Department[]       @relation("DepartmentHierarchy")
+  parentDepartment   Department?  @relation("DepartmentHierarchy", fields: [parentDepartmentId], references: [id])
+  childDepartments   Department[] @relation("DepartmentHierarchy")
 
-  users              User[]
+  users User[]
 
-  createdAt          DateTime           @default(now())
-  updatedAt          DateTime           @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model AssetCategory {
@@ -50,8 +51,10 @@ model AssetCategory {
   description String?
   status      CategoryStatus @default(ACTIVE)
 
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("asset_categories")
 }
 
 model User {
