@@ -1,5 +1,5 @@
 import React from 'react';
-import { Edit2, Eye, Tool, CheckCircle } from 'lucide-react';
+import { Edit2, Eye, Wrench, CheckCircle } from 'lucide-react';
 
 const MaintenanceTable = ({ data = [], onView, onEdit, onAssign, onComplete }) => {
   const getPriorityColor = (priority) => {
@@ -83,7 +83,7 @@ const MaintenanceTable = ({ data = [], onView, onEdit, onAssign, onComplete }) =
                         title="Assign Technician"
                         disabled={record.status === 'Completed'}
                       >
-                        <Tool className="w-4 h-4" />
+                        <Wrench className="w-4 h-4" />
                       </button>
                       <button 
                         onClick={() => onComplete && onComplete(record)}

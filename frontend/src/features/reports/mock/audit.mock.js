@@ -1,1 +1,1 @@
-export const audit.mockData = [];
+export const auditMockData = [];

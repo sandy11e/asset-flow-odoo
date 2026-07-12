@@ -1,1 +1,1 @@
-export const transfer.mockData = [];
+export const transferMockData = [];

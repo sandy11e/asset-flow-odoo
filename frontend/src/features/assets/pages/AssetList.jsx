@@ -2,25 +2,35 @@ import React, { useState, useEffect } from 'react';
 import { Plus, Download, Filter, Search } from 'lucide-react';
 import AssetTable from '../components/tables/AssetTable';
 import { getAssets } from '../services/asset.service';
+import AssetFormDialog from '../components/dialogs/AssetFormDialog';
+import { useOrganizationData } from '@/features/organization/hooks/useOrganizationData';
 
 const AssetList = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [assets, setAssets] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  
+  // Dialog state
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [editingAsset, setEditingAsset] = useState(null);
+
+  const { categories } = useOrganizationData();
+
+  const fetchAssets = async () => {
+    setIsLoading(true);
+    try {
+      const response = await getAssets();
+      // Adjust according to standard API response structure
+      const data = response.data?.data || response.data || [];
+      setAssets(data);
+    } catch (error) {
+      console.error('Failed to fetch assets:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchAssets = async () => {
-      try {
-        const response = await getAssets();
-        // Adjust according to standard API response structure
-        const data = response.data?.data || response.data || [];
-        setAssets(data);
-      } catch (error) {
-        console.error('Failed to fetch assets:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
     fetchAssets();
   }, []);
   
@@ -29,6 +39,23 @@ const AssetList = () => {
     asset.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     asset.assetTag?.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleCreateNew = () => {
+    setEditingAsset(null);
+    setIsFormOpen(true);
+  };
+
+  const handleEdit = (asset) => {
+    setEditingAsset(asset);
+    setIsFormOpen(true);
+  };
+
+  const handleFormSubmit = async (data) => {
+    // In a real app, you would call createAsset or updateAsset API here
+    console.log('Submitting asset:', data);
+    // Refresh list
+    fetchAssets();
+  };
 
   return (
     <div className="p-6 max-w-[1600px] mx-auto w-full">
@@ -43,9 +70,12 @@ const AssetList = () => {
             <Download className="w-4 h-4" />
             Export
           </button>
-          <button className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-sm font-medium text-sm w-full sm:w-auto justify-center">
+          <button 
+            onClick={handleCreateNew}
+            className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-sm font-medium text-sm w-full sm:w-auto justify-center"
+          >
             <Plus className="w-4 h-4" />
-            Add Asset
+            Register Asset
           </button>
         </div>
       </div>
@@ -59,7 +89,7 @@ const AssetList = () => {
           <input
             type="text"
             className="block w-full pl-10 pr-3 py-2 border border-gray-200 rounded-lg leading-5 bg-gray-50 placeholder-gray-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-all"
-            placeholder="Search assets by name or ID..."
+            placeholder="Search assets by tag, serial, or name..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -75,9 +105,18 @@ const AssetList = () => {
       {/* Data Table */}
       <AssetTable 
         data={filteredAssets} 
-        onEdit={(asset) => console.log('Edit', asset)}
-        onView={(asset) => console.log('View', asset)}
+        onEdit={handleEdit}
+        onView={handleEdit}
         onDelete={(asset) => console.log('Delete', asset)}
+        isLoading={isLoading}
+      />
+      
+      <AssetFormDialog 
+        isOpen={isFormOpen}
+        onClose={() => setIsFormOpen(false)}
+        onSubmit={handleFormSubmit}
+        asset={editingAsset}
+        categories={categories}
       />
     </div>
   );

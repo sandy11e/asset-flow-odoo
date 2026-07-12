@@ -2,101 +2,59 @@ const prisma = require("../config/prisma");
 
 const getDashboard = async () => {
 
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
+    const todayEnd = new Date();
+    todayEnd.setHours(23, 59, 59, 999);
+    const now = new Date();
+
     const [
         totalAssets,
         availableAssets,
         allocatedAssets,
-        maintenanceAssets,
+        maintenanceToday,
         activeBookings,
-        activeAllocations,
-        totalUsers,
-        totalDepartments,
-        totalCategories,
+        pendingTransfers,
+        upcomingReturns,
+        overdueReturns,
         recentAssets,
         recentMaintenance
     ] = await Promise.all([
-
         prisma.asset.count(),
-
-        prisma.asset.count({
-            where: {
-                status: "AVAILABLE",
-            },
+        prisma.asset.count({ where: { status: "AVAILABLE" } }),
+        prisma.asset.count({ where: { status: "ALLOCATED" } }),
+        prisma.maintenanceRequest.count({
+            where: { createdAt: { gte: todayStart, lte: todayEnd } }
         }),
-
-        prisma.asset.count({
-            where: {
-                status: "ALLOCATED",
-            },
-        }),
-
-        prisma.asset.count({
-            where: {
-                status: "UNDER_MAINTENANCE",
-            },
-        }),
-
         prisma.resourceBooking.count({
-            where: {
-                status: "UPCOMING",
-            },
+            where: { status: { in: ["UPCOMING", "ONGOING"] } }
         }),
-
+        Promise.resolve(0), // Mocked for now
         prisma.assetAllocation.count({
-            where: {
-                status: "ACTIVE",
-            },
+            where: { status: "ACTIVE", expectedReturnDate: { gte: now } }
         }),
-
-        prisma.user.count(),
-
-        prisma.department.count(),
-
-        prisma.assetCategory.count(),
-
-        prisma.asset.findMany({
-            orderBy: {
-                createdAt: "desc",
-            },
-            take: 5,
+        prisma.assetAllocation.count({
+            where: { status: "ACTIVE", expectedReturnDate: { lt: now } }
         }),
-
+        prisma.asset.findMany({ orderBy: { createdAt: "desc" }, take: 5 }),
         prisma.maintenanceRequest.findMany({
-            orderBy: {
-                createdAt: "desc",
-            },
+            orderBy: { createdAt: "desc" },
             take: 5,
-            include: {
-                asset: true,
-            },
+            include: { asset: true }
         })
-
     ]);
 
     return {
-
         totalAssets,
-
         availableAssets,
-
         allocatedAssets,
-
-        maintenanceAssets,
-
+        maintenanceToday,
         activeBookings,
-
-        activeAllocations,
-
-        totalUsers,
-
-        totalDepartments,
-
-        totalCategories,
-
+        pendingTransfers,
+        upcomingReturns,
+        overdueReturns,
         recentAssets,
-
-        recentMaintenance,
-
+        recentMaintenance
     };
 
 };

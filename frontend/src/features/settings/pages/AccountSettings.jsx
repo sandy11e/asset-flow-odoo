@@ -36,7 +36,7 @@ const AccountSettings = () => {
                   item.active 
                     ? 'bg-indigo-50 text-indigo-700' 
                     : 'text-gray-700 hover:bg-gray-100'
-                }\`}
+                }`}
               >
                 <item.icon className={`w-5 h-5 ${item.active ? 'text-indigo-600' : 'text-gray-400'}`} />
                 {item.label}

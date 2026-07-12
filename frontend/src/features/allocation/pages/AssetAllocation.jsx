@@ -1,18 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Plus, Download, Filter, Search } from 'lucide-react';
 import AllocationTable from '../components/tables/AllocationTable';
 import CreateAllocationDialog from '../components/dialogs/CreateAllocationDialog';
+import TransferAssetDialog from '../components/dialogs/TransferAssetDialog';
+import ReturnAssetDialog from '../components/dialogs/ReturnAssetDialog';
 import { allocationMockData } from '../mock/allocation.mock';
+import { getAssets } from '@/features/assets/services/asset.service';
 
 const AssetAllocation = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isCreateOpen, setIsCreateOpen] = useState(false);
+  
+  const [isTransferOpen, setIsTransferOpen] = useState(false);
+  const [transferAsset, setTransferAsset] = useState(null);
+  
+  const [isReturnOpen, setIsReturnOpen] = useState(false);
+  const [returnAsset, setReturnAsset] = useState(null);
+  
+  const [assets, setAssets] = useState([]);
+
+  useEffect(() => {
+    getAssets().then(res => {
+      const data = res.data?.data || res.data || [];
+      setAssets(data);
+    });
+  }, []);
   
   const filteredAllocations = allocationMockData.filter(alloc => 
     alloc.assetName.toLowerCase().includes(searchTerm.toLowerCase()) ||
     alloc.assignedTo.toLowerCase().includes(searchTerm.toLowerCase()) ||
     alloc.id.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleTransferRequest = (asset) => {
+    setIsCreateOpen(false); // close allocation modal
+    setTransferAsset(asset);
+    setIsTransferOpen(true); // open transfer modal
+  };
 
   return (
     <div className="p-6 max-w-[1600px] mx-auto w-full">
@@ -63,17 +87,39 @@ const AssetAllocation = () => {
       <AllocationTable 
         data={filteredAllocations} 
         onView={(alloc) => console.log('View', alloc)}
-        onTransfer={(alloc) => console.log('Transfer', alloc)}
-        onReturn={(alloc) => console.log('Return', alloc)}
+        onTransfer={(alloc) => { setTransferAsset(alloc); setIsTransferOpen(true); }}
+        onReturn={(alloc) => { setReturnAsset(alloc); setIsReturnOpen(true); }}
       />
 
       <CreateAllocationDialog 
         isOpen={isCreateOpen} 
         onClose={() => setIsCreateOpen(false)} 
+        assets={assets}
+        onTransferRequest={handleTransferRequest}
         onSubmit={(data) => {
           console.log('Created allocation', data);
           setIsCreateOpen(false);
         }} 
+      />
+
+      <TransferAssetDialog
+        isOpen={isTransferOpen}
+        onClose={() => setIsTransferOpen(false)}
+        allocation={transferAsset}
+        onSubmit={(data) => {
+          console.log('Transfer Request created', data);
+          setIsTransferOpen(false);
+        }}
+      />
+
+      <ReturnAssetDialog
+        isOpen={isReturnOpen}
+        onClose={() => setIsReturnOpen(false)}
+        allocation={returnAsset}
+        onSubmit={(data) => {
+          console.log('Asset Returned', data);
+          setIsReturnOpen(false);
+        }}
       />
     </div>
   );

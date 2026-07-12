@@ -1,1 +1,1 @@
-export const approval.mockData = [];
+export const approvalMockData = [];

@@ -1,1 +1,1 @@
-export const spareParts.mockData = [];
+export const sparePartsMockData = [];

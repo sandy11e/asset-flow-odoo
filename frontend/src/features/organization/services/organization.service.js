@@ -1,110 +1,52 @@
-import {
-  organizationMockData,
-  departmentMockData,
-  branchMockData,
-  teamMockData,
-} from '../mock/organization.mock';
-
-const DELAY_MS = 400;
+import api from '@/services/api';
 
 export const organizationService = {
-  // Organizations
-  getOrganizations: async () => {
-    return new Promise((resolve) => {
-      setTimeout(() => resolve([...organizationMockData]), DELAY_MS);
-    });
-  },
-  getOrganizationById: async (id) => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        const org = organizationMockData.find((item) => item.id === id);
-        if (org) resolve(org);
-        else reject(new Error('Organization not found'));
-      }, DELAY_MS);
-    });
-  },
-  createOrganization: async (newOrg) => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const created = {
-          ...newOrg,
-          id: `org-${Date.now()}`,
-          status: 'Pending Approval',
-          employeeCount: 0,
-          departmentCount: 0,
-          branchCount: 0,
-          totalAssetValue: '$0',
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        };
-        resolve(created);
-      }, DELAY_MS);
-    });
-  },
-  updateOrganization: async (id, updatedData) => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({ id, ...updatedData, updatedAt: new Date().toISOString() });
-      }, DELAY_MS);
-    });
-  },
-  deleteOrganization: async (id) => {
-    return new Promise((resolve) => {
-      setTimeout(() => resolve({ success: true, id }), DELAY_MS);
-    });
-  },
-
   // Departments
-  getDepartments: async (orgId = null) => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        if (orgId) {
-          resolve(departmentMockData.filter((d) => d.orgId === orgId));
-        } else {
-          resolve([...departmentMockData]);
-        }
-      }, DELAY_MS);
-    });
+  getDepartments: async () => {
+    return api.get('/departments');
   },
-  createDepartment: async (newDept) => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({
-          ...newDept,
-          id: `dept-${Date.now()}`,
-          status: 'Active',
-          employeeCount: 0,
-          assetCount: 0,
-          createdAt: new Date().toISOString(),
-        });
-      }, DELAY_MS);
-    });
+  getDepartmentById: async (id) => {
+    return api.get(`/departments/${id}`);
+  },
+  createDepartment: async (data) => {
+    return api.post('/departments', data);
+  },
+  updateDepartment: async (id, data) => {
+    return api.patch(`/departments/${id}`, data);
+  },
+  updateDepartmentStatus: async (id, status) => {
+    return api.patch(`/departments/${id}/status`, { status });
   },
 
-  // Branches
-  getBranches: async (orgId = null) => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        if (orgId) {
-          resolve(branchMockData.filter((b) => b.orgId === orgId));
-        } else {
-          resolve([...branchMockData]);
-        }
-      }, DELAY_MS);
-    });
+  // Categories
+  getCategories: async () => {
+    return api.get('/categories');
+  },
+  getCategoryById: async (id) => {
+    return api.get(`/categories/${id}`);
+  },
+  createCategory: async (data) => {
+    return api.post('/categories', data);
+  },
+  updateCategory: async (id, data) => {
+    return api.patch(`/categories/${id}`, data);
+  },
+  updateCategoryStatus: async (id, status) => {
+    return api.patch(`/categories/${id}/status`, { status });
   },
 
-  // Teams
-  getTeams: async (deptId = null) => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        if (deptId) {
-          resolve(teamMockData.filter((t) => t.deptId === deptId));
-        } else {
-          resolve([...teamMockData]);
-        }
-      }, DELAY_MS);
-    });
+  // Employees (Users)
+  getEmployees: async () => {
+    return api.get('/users');
+  },
+  getEmployeeById: async (id) => {
+    return api.get(`/users/${id}`);
+  },
+  updateEmployeeRole: async (id, role) => {
+    return api.patch(`/users/${id}/role`, { role });
+  },
+  updateEmployeeStatus: async (id, status) => {
+    return api.patch(`/users/${id}/status`, { status });
   },
 };
 

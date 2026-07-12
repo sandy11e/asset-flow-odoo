@@ -1,1 +1,1 @@
-export const technician.mockData = [];
+export const technicianMockData = [];

@@ -30,7 +30,7 @@ import { DoughnutChart } from '../components/DoughnutChart';
 import { BarChart } from '../components/BarChart';
 
 // Icons
-import { Package, CheckCircle, Clock, AlertTriangle } from 'lucide-react';
+import { Package, CheckCircle, Clock, AlertTriangle, ArrowRightLeft, CalendarClock, RotateCcw } from 'lucide-react';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -141,14 +141,36 @@ const DashboardHome = () => {
         <QuickActionsPanel />
       </motion.div>
 
+      {/* Overdue Returns Alert */}
+      {summary?.overdueReturns > 0 && (
+        <motion.div variants={itemVariants} className="mb-6">
+          <div className="flex items-center justify-between bg-rose-50 border border-rose-200 rounded-xl p-4 shadow-sm">
+            <div className="flex items-center gap-3">
+              <div className="bg-rose-100 p-2 rounded-lg">
+                <AlertTriangle className="w-6 h-6 text-rose-600" />
+              </div>
+              <div>
+                <h3 className="text-rose-800 font-bold">Overdue Returns Detected</h3>
+                <p className="text-sm text-rose-600 font-medium">There are {summary.overdueReturns} assets currently overdue for return.</p>
+              </div>
+            </div>
+            <button className="px-4 py-2 bg-rose-600 text-white rounded-lg text-sm font-semibold hover:bg-rose-700 transition-colors shadow-sm">
+              Review Now
+            </button>
+          </div>
+        </motion.div>
+      )}
+
       {/* KPI Stats */}
       <motion.div variants={itemVariants}>
         <DashboardSection>
-          <AnalyticsGrid columns={4}>
-            <StatCard title="Total Assets" value={summary?.totalAssets || 0} icon={Package} trend="up" trendValue="12%" color="primary" />
-            <StatCard title="Available" value={summary?.availableAssets || 0} icon={CheckCircle} color="success" />
-            <StatCard title="Allocated" value={summary?.allocatedAssets || 0} icon={Clock} color="warning" />
-            <StatCard title="Under Maintenance" value={summary?.maintenanceAssets || 0} icon={AlertTriangle} color="danger" />
+          <AnalyticsGrid columns={3}>
+            <StatCard title="Assets Available" value={summary?.availableAssets || 0} icon={CheckCircle} color="success" />
+            <StatCard title="Assets Allocated" value={summary?.allocatedAssets || 0} icon={Package} color="primary" />
+            <StatCard title="Maintenance Today" value={summary?.maintenanceToday || 0} icon={AlertTriangle} color="danger" />
+            <StatCard title="Active Bookings" value={summary?.activeBookings || 0} icon={CalendarClock} color="warning" />
+            <StatCard title="Pending Transfers" value={summary?.pendingTransfers || 0} icon={ArrowRightLeft} color="primary" />
+            <StatCard title="Upcoming Returns" value={summary?.upcomingReturns || 0} icon={RotateCcw} color="warning" />
           </AnalyticsGrid>
         </DashboardSection>
       </motion.div>

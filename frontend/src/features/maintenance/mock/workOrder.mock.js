@@ -1,1 +1,1 @@
-export const workOrder.mockData = [];
+export const workOrderMockData = [];

@@ -2,10 +2,9 @@ import { useState, useEffect, useCallback } from 'react';
 import { organizationService } from '../services/organization.service';
 
 export const useOrganizationData = () => {
-  const [organizations, setOrganizations] = useState([]);
   const [departments, setDepartments] = useState([]);
-  const [branches, setBranches] = useState([]);
-  const [teams, setTeams] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [employees, setEmployees] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -13,16 +12,14 @@ export const useOrganizationData = () => {
     setIsLoading(true);
     setError(null);
     try {
-      const [orgData, deptData, branchData, teamData] = await Promise.all([
-        organizationService.getOrganizations(),
+      const [deptData, catData, empData] = await Promise.all([
         organizationService.getDepartments(),
-        organizationService.getBranches(),
-        organizationService.getTeams(),
+        organizationService.getCategories(),
+        organizationService.getEmployees(),
       ]);
-      setOrganizations(orgData);
-      setDepartments(deptData);
-      setBranches(branchData);
-      setTeams(teamData);
+      setDepartments(deptData.data || deptData);
+      setCategories(catData.data || catData);
+      setEmployees(empData.data || empData);
     } catch (err) {
       setError(err.message || 'Failed to load organization data.');
     } finally {
@@ -35,10 +32,9 @@ export const useOrganizationData = () => {
   }, [fetchAllData]);
 
   return {
-    organizations,
     departments,
-    branches,
-    teams,
+    categories,
+    employees,
     isLoading,
     error,
     refresh: fetchAllData,
