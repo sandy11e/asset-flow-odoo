@@ -1,38 +1,50 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '@/routes/routes';
 import { authService } from '../services/auth.service';
-import { Loader2, CheckCircle2 } from 'lucide-react';
+import { CheckCircle2, Mail } from 'lucide-react';
+import Button from '@/components/ui/Button';
+import Input from '@/components/forms/Input';
+
+const forgotPasswordSchema = z.object({
+  email: z.string().min(1, 'Email is required').email('Invalid email address'),
+});
 
 const ForgotPassword = () => {
-  const [isLoading, setIsLoading] = useState(false);
   const [isSent, setIsSent] = useState(false);
+  const [authError, setAuthError] = useState('');
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    const email = new FormData(e.target).get('email');
-    
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    resolver: zodResolver(forgotPasswordSchema),
+  });
+
+  const onSubmit = async (data) => {
+    setAuthError('');
     try {
-      await authService.forgotPassword({ email });
+      await authService.forgotPassword(data);
       setIsSent(true);
     } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoading(false);
+      setAuthError(error.message || 'Failed to send reset link');
     }
   };
 
   if (isSent) {
     return (
-      <div className="text-center w-full">
+      <div className="w-full bg-white py-12 px-6 shadow rounded-lg border border-gray-200 text-center">
         <CheckCircle2 className="w-16 h-16 text-green-500 mx-auto mb-4" />
         <h2 className="text-2xl font-bold text-gray-900 mb-2">Check your email</h2>
         <p className="text-gray-600 mb-6">
           We have sent a password reset link to your email address.
         </p>
-        <Link to={ROUTES.LOGIN} className="text-primary-600 font-medium hover:text-primary-500">
-          Return to login
+        <Link to={ROUTES.LOGIN}>
+          <Button variant="primary" className="w-full">Return to login</Button>
         </Link>
       </div>
     );
@@ -40,36 +52,45 @@ const ForgotPassword = () => {
 
   return (
     <div className="w-full">
-      <h2 className="text-2xl font-bold text-gray-900 mb-2 text-center">Reset your password</h2>
-      <p className="text-sm text-gray-500 mb-6 text-center">
-        Enter your email address and we will send you a link to reset your password.
-      </p>
+      <div className="text-center mb-8">
+        <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">Reset password</h2>
+        <p className="mt-2 text-sm text-gray-600">Enter your email to receive a reset link</p>
+      </div>
       
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-          <input 
-            name="email"
-            type="email" 
-            required 
-            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500"
+      {authError && (
+        <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6">
+          <p className="text-sm text-red-700">{authError}</p>
+        </div>
+      )}
+      
+      <div className="bg-white py-8 px-6 shadow rounded-lg sm:px-10 border border-gray-200">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <Input
+            id="email"
+            label="Email Address"
+            type="email"
+            placeholder="admin@assetflow.com"
+            icon={Mail}
+            error={errors.email?.message}
+            {...register('email')}
           />
-        </div>
 
-        <button 
-          type="submit" 
-          disabled={isLoading}
-          className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50"
-        >
-          {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Send reset link'}
-        </button>
+          <Button 
+            type="submit" 
+            variant="primary" 
+            className="w-full"
+            isLoading={isSubmitting}
+          >
+            Send reset link
+          </Button>
 
-        <div className="text-center mt-4">
-          <Link to={ROUTES.LOGIN} className="text-sm text-gray-600 hover:text-gray-900">
-            Back to login
-          </Link>
-        </div>
-      </form>
+          <div className="text-center mt-4">
+            <Link to={ROUTES.LOGIN} className="text-sm font-medium text-blue-600 hover:text-blue-500">
+              Back to login
+            </Link>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };

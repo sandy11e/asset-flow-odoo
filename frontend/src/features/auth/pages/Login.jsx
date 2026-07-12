@@ -1,82 +1,99 @@
-import { useState } from 'react';
-import { useForm } from 'react-form'; // Placeholder, typically react-hook-form
+import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { ROUTES } from '@/routes/routes';
-import { Loader2 } from 'lucide-react';
+import Button from '@/components/ui/Button';
+import Input from '@/components/forms/Input';
+import { Mail, Lock } from 'lucide-react';
+
+const loginSchema = z.object({
+  email: z.string().min(1, 'Email is required').email('Invalid email address'),
+  password: z.string().min(1, 'Password is required'),
+});
 
 const Login = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
-  const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [authError, setAuthError] = useState('');
 
-  // In real implementation, use react-hook-form + zod
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError('');
-    
-    const formData = new FormData(e.target);
-    const email = formData.get('email');
-    const password = formData.get('password');
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    resolver: zodResolver(loginSchema),
+  });
 
+  const onSubmit = async (data) => {
+    setAuthError('');
     try {
-      await login({ email, password });
+      await login(data);
       navigate(ROUTES.DASHBOARD);
     } catch (err) {
-      setError(err.message || 'Invalid credentials');
-    } finally {
-      setIsLoading(false);
+      setAuthError(err.message || 'Invalid credentials');
     }
   };
 
   return (
-    <div className="w-full">
-      <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">Sign in to your account</h2>
+    <div className="w-full max-w-md mx-auto">
+      <div className="text-center mb-8">
+        <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">Welcome back</h2>
+        <p className="mt-2 text-sm text-gray-600">Sign in to your AssetFlow account</p>
+      </div>
       
-      {error && (
-        <div className="bg-red-50 text-red-600 p-3 rounded-md mb-4 text-sm">
-          {error}
+      {authError && (
+        <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6">
+          <div className="flex">
+            <div className="ml-3">
+              <p className="text-sm text-red-700">{authError}</p>
+            </div>
+          </div>
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-          <input 
-            name="email"
-            type="email" 
-            required 
-            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500"
+      <div className="bg-white py-8 px-6 shadow rounded-lg sm:px-10 border border-gray-200">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <Input
+            id="email"
+            label="Email Address"
+            type="email"
             placeholder="admin@assetflow.com"
+            icon={Mail}
+            error={errors.email?.message}
+            {...register('email')}
           />
-        </div>
-        
-        <div>
-          <div className="flex items-center justify-between mb-1">
-            <label className="block text-sm font-medium text-gray-700">Password</label>
-            <Link to="/forgot-password" className="text-sm text-primary-600 hover:text-primary-500">
-              Forgot password?
-            </Link>
+          
+          <div>
+            <div className="flex items-center justify-between mb-1">
+              <label className="block text-sm font-medium text-gray-700 invisible">Password Label</label>
+              <Link to="/forgot-password" className="text-sm font-medium text-blue-600 hover:text-blue-500 absolute -mt-7 right-6 sm:right-10">
+                Forgot password?
+              </Link>
+            </div>
+            <Input
+              id="password"
+              label="Password"
+              type="password"
+              placeholder="••••••••"
+              icon={Lock}
+              error={errors.password?.message}
+              {...register('password')}
+            />
           </div>
-          <input 
-            name="password"
-            type="password" 
-            required 
-            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500"
-            placeholder="••••••••"
-          />
-        </div>
 
-        <button 
-          type="submit" 
-          disabled={isLoading}
-          className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50"
-        >
-          {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Sign In'}
-        </button>
-      </form>
+          <Button 
+            type="submit" 
+            variant="primary" 
+            className="w-full"
+            isLoading={isSubmitting}
+          >
+            Sign In
+          </Button>
+        </form>
+      </div>
     </div>
   );
 };

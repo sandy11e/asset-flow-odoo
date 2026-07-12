@@ -1,78 +1,89 @@
-import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '@/routes/routes';
 import { authService } from '../services/auth.service';
-import { Loader2 } from 'lucide-react';
+import { Lock } from 'lucide-react';
+import Button from '@/components/ui/Button';
+import Input from '@/components/forms/Input';
+
+const resetPasswordSchema = z.object({
+  password: z.string().min(8, 'Password must be at least 8 characters'),
+  confirmPassword: z.string().min(1, 'Please confirm your password'),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords do not match",
+  path: ["confirmPassword"],
+});
 
 const ResetPassword = () => {
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [authError, setAuthError] = useState('');
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError('');
-    
-    const formData = new FormData(e.target);
-    const password = formData.get('password');
-    const confirmPassword = formData.get('confirmPassword');
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    resolver: zodResolver(resetPasswordSchema),
+  });
 
-    if (password !== confirmPassword) {
-      setError('Passwords do not match');
-      setIsLoading(false);
-      return;
-    }
-
+  const onSubmit = async (data) => {
+    setAuthError('');
     try {
-      await authService.resetPassword({ password });
+      await authService.resetPassword({ password: data.password });
       navigate(ROUTES.LOGIN, { state: { message: 'Password reset successful. Please login.' } });
     } catch (err) {
-      setError('Failed to reset password. The link might be expired.');
-    } finally {
-      setIsLoading(false);
+      setAuthError('Failed to reset password. The link might be expired.');
     }
   };
 
   return (
     <div className="w-full">
-      <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">Set new password</h2>
+      <div className="text-center mb-8">
+        <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">Set new password</h2>
+        <p className="mt-2 text-sm text-gray-600">Please enter your new password below</p>
+      </div>
       
-      {error && (
-        <div className="bg-red-50 text-red-600 p-3 rounded-md mb-4 text-sm">
-          {error}
+      {authError && (
+        <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6">
+          <p className="text-sm text-red-700">{authError}</p>
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">New Password</label>
-          <input 
-            name="password"
-            type="password" 
-            required 
-            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500"
+      <div className="bg-white py-8 px-6 shadow rounded-lg sm:px-10 border border-gray-200">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <Input
+            id="password"
+            label="New Password"
+            type="password"
+            placeholder="••••••••"
+            icon={Lock}
+            error={errors.password?.message}
+            {...register('password')}
           />
-        </div>
-        
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Confirm New Password</label>
-          <input 
-            name="confirmPassword"
-            type="password" 
-            required 
-            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500"
+          
+          <Input
+            id="confirmPassword"
+            label="Confirm New Password"
+            type="password"
+            placeholder="••••••••"
+            icon={Lock}
+            error={errors.confirmPassword?.message}
+            {...register('confirmPassword')}
           />
-        </div>
 
-        <button 
-          type="submit" 
-          disabled={isLoading}
-          className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50"
-        >
-          {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Reset Password'}
-        </button>
-      </form>
+          <Button 
+            type="submit" 
+            variant="primary" 
+            className="w-full"
+            isLoading={isSubmitting}
+          >
+            Reset Password
+          </Button>
+        </form>
+      </div>
     </div>
   );
 };

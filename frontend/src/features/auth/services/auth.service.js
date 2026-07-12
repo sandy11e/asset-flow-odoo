@@ -1,16 +1,23 @@
 import api from '@/services/api';
 
 export const authService = {
+  // Interfaces prepared for backend connection
   login: async (credentials) => {
     // return api.post('/auth/login', credentials);
-    // MOCK RESPONSE
+    
+    // MOCK RESPONSE (No JWT)
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         if (credentials.email === 'admin@assetflow.com' && credentials.password === 'admin123') {
           resolve({
             data: {
-              token: 'mock-jwt-token',
               user: { id: 1, email: 'admin@assetflow.com', role: 'admin', name: 'Admin User' },
+            },
+          });
+        } else if (credentials.email === 'employee@assetflow.com' && credentials.password === 'emp123') {
+          resolve({
+            data: {
+              user: { id: 2, email: 'employee@assetflow.com', role: 'employee', name: 'John Doe' },
             },
           });
         } else {
@@ -22,7 +29,6 @@ export const authService = {
 
   forgotPassword: async (data) => {
     // return api.post('/auth/forgot-password', data);
-    // MOCK RESPONSE
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve({ data: { message: 'Reset link sent if email exists' } });
@@ -32,7 +38,6 @@ export const authService = {
 
   resetPassword: async (data) => {
     // return api.post('/auth/reset-password', data);
-    // MOCK RESPONSE
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve({ data: { message: 'Password reset successfully' } });
@@ -42,7 +47,6 @@ export const authService = {
 
   logout: async () => {
     // return api.post('/auth/logout');
-    // MOCK RESPONSE
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve({ data: { message: 'Logged out' } });
@@ -52,17 +56,11 @@ export const authService = {
 
   getCurrentUser: async () => {
     // return api.get('/auth/me');
-    // MOCK RESPONSE (simulate failure if no token is mocked)
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       setTimeout(() => {
-        const token = localStorage.getItem('token');
-        if (token) {
-          resolve({
-            data: { user: { id: 1, email: 'admin@assetflow.com', role: 'admin', name: 'Admin User' } },
-          });
-        } else {
-          reject(new Error('Not authenticated'));
-        }
+        resolve({
+          data: { user: { id: 1, email: 'admin@assetflow.com', role: 'admin', name: 'Admin User' } },
+        });
       }, 500);
     });
   },

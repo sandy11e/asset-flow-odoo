@@ -10,16 +10,16 @@ export const AuthProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    // Persistent user state placeholder - purely mock
     const checkAuth = async () => {
       try {
-        const token = localStorage.getItem('token');
-        if (token) {
-          const response = await authService.getCurrentUser();
-          setUser(response.data.user);
+        const savedUser = localStorage.getItem('assetflow_mock_user');
+        if (savedUser) {
+          setUser(JSON.parse(savedUser));
           setIsAuthenticated(true);
         }
       } catch (error) {
-        localStorage.removeItem('token');
+        localStorage.removeItem('assetflow_mock_user');
         setUser(null);
         setIsAuthenticated(false);
       } finally {
@@ -31,17 +31,20 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async (credentials) => {
+    // Calling the API interface, though currently mocked
     const response = await authService.login(credentials);
-    const { token, user } = response.data;
-    localStorage.setItem('token', token);
-    setUser(user);
+    const mockUser = response.data.user;
+    
+    // Persistent user state placeholder (No JWT / token logic)
+    localStorage.setItem('assetflow_mock_user', JSON.stringify(mockUser));
+    setUser(mockUser);
     setIsAuthenticated(true);
-    return user;
+    return mockUser;
   };
 
   const logout = async () => {
     await authService.logout();
-    localStorage.removeItem('token');
+    localStorage.removeItem('assetflow_mock_user');
     setUser(null);
     setIsAuthenticated(false);
   };
